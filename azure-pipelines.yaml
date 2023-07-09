@@ -43,6 +43,7 @@ stages:
         backendAzureRmStorageAccountName: 'tfstate272695408'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
+        runAzLogin: true
 
     # Run Terraform Validate    
     - task: TerraformCLI@0
