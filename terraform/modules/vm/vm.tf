@@ -1,5 +1,5 @@
-resource "azurerm_network_interface" "" {
-  name                = "NIC-${var.resource_type}-${var.application_type}"
+resource "azurerm_network_interface" "test" {
+  name                = "${var.application_type}-${var.resource-type}-nic"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group}"
 
@@ -11,8 +11,8 @@ resource "azurerm_network_interface" "" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "" {
-  name                = "${var.resource_type}-${var.application_type}"
+resource "azurerm_linux_virtual_machine" "test" {
+  name                = "${var.application_type}-${var.resource-type}"
   location            = var.location
   resource_group_name = var.resource_group
   size                = "Standard_DS2_v2"
