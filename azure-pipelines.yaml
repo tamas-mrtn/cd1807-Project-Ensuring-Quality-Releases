@@ -31,7 +31,6 @@ stages:
         terraformVersion: '1.2.9'
     
     # Run Terraform Init on the pipeline agent 
-    # ToDo: Replace the resource group name, storage account name, and container name below
     - task: TerraformTaskV3@3
       displayName: 'Terrafom init'
       inputs:
@@ -51,7 +50,14 @@ stages:
         provider: 'azurerm'
         command: 'validate'
 
-    
+    # Install SSH Key for VM
+          - task: InstallSSHKey@0
+            displayName: Installing SSH key
+            inputs:
+              knownHostsEntry: "known_hosts"
+              sshPublicKey: $(public_key)
+              sshKeySecureFile: "id_rsa"
+              
     # Run Terraform Apply
     # ToDo: Change the workingDirectory path, as applicable to you
     - task: TerraformTaskV3@3
