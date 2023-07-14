@@ -51,13 +51,13 @@ stages:
         command: 'validate'
 
     # Install SSH Key for VM
-          - task: InstallSSHKey@0
-            displayName: Installing SSH key
-            inputs:
-              knownHostsEntry: "known_hosts"
-              sshPublicKey: $(public_key)
-              sshKeySecureFile: "id_rsa"
-              
+    - task: InstallSSHKey@0
+      displayName: Installing SSH key
+      inputs:
+        knownHostsEntry: "known_hosts"
+        sshPublicKey: $(public_key)
+        sshKeySecureFile: "id_rsa"
+
     # Run Terraform Apply
     # ToDo: Change the workingDirectory path, as applicable to you
     - task: TerraformTaskV3@3
