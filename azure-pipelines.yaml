@@ -180,7 +180,7 @@ stages:
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip       # ToDo: Use the published zip artifact. 
           #--------------------------------------------#    
-          # Run JMeter test suite against the App Service
+          # Stress test
           - task: CmdLine@2
             inputs:
               script: |
@@ -189,4 +189,36 @@ stages:
                 unzip -o $(Build.BuildId)-perftests.zip
                 ./apache-jmeter-5.5/bin/jmeter -n -t stress-test.jmx -l $(Build.BuildId)-jmeter_stress.log -e -o /home/devopsagent/$(Build.BuildId)_Stress_Test_Logs/
                 cat jmeter.log                                                                           # ToDo: Write your commands
-              workingDirectory: $(Pipeline.Workspace)/drop-perftests            # ToDo: Use the artifact name from the task above
+              workingDirectory: $(Pipeline.Workspace)/drop-perftests
+          # Endurance Test
+          - task: CmdLine@2
+            inputs:
+              script: |
+                wget "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.5.tgz"
+                tar -xf apache-jmeter-5.5.tgz
+                unzip -o $(Build.BuildId)-performancetests.zip
+                ./apache-jmeter-5.5/bin/jmeter -n -t endurance-test.jmx -l $(Build.BuildId)-jmeter_endurance.log -e -o /home/devopsagent/$(Build.BuildId)_Endurance_Test_Logs/
+                cat jmeter.log
+              workingDirectory: $(Pipeline.Workspace)/drop-performancetests
+            
+          - task: ArchiveFiles@2
+            displayName: Save JMeter Stress Test Report to Artifact
+            inputs:
+              rootFolderOrFile: '/home/devopsagent/$(Build.BuildId)_Stress_Test_Logs/'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report-$(Build.BuildId).zip'
+              verbose: true
+          - task: ArchiveFiles@2
+            displayName: Save JMeter Endurance Test Report to Artifact
+            inputs:
+              rootFolderOrFile: '/home/devopsagent/$(Build.BuildId)_Endurance_Test_Logs/'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report-$(Build.BuildId).zip'
+              verbose: true
+          - task: PublishPipelineArtifact@1
+            displayName: Publish JMeter Logs
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+              artifactName: 'drop-jmeter-logs'       
