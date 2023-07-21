@@ -184,20 +184,18 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                wget "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.5.tgz"
-                tar -xf apache-jmeter-5.5.tgz
+                wget "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.tgz"
+                tar -xf apache-jmeter-5.6.tgz
                 unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.5/bin/jmeter -n -t stress-test.jmx -l $(Build.BuildId)-jmeter_stress.log -e -o /home/devopsagent/$(Build.BuildId)_Stress_Test_Logs/
+                ./apache-jmeter-5.6/bin/jmeter -n -t stress-test.jmx -l $(Build.BuildId)-jmeter_stress.log -e -o /home/devopsagent/$(Build.BuildId)_Stress_Test_Logs/
                 cat jmeter.log                                                                           # ToDo: Write your commands
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           # Endurance Test
           - task: CmdLine@2
             inputs:
               script: |
-                wget "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.5.tgz"
-                tar -xf apache-jmeter-5.5.tgz
                 unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.5/bin/jmeter -n -t endurance-test.jmx -l $(Build.BuildId)-jmeter_endurance.log -e -o /home/devopsagent/$(Build.BuildId)_Endurance_Test_Logs/
+                ./apache-jmeter-5.6/bin/jmeter -n -t endurance-test.jmx -l $(Build.BuildId)-jmeter_endurance.log -e -o /home/devopsagent/$(Build.BuildId)_Endurance_Test_Logs/
                 cat jmeter.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
             
