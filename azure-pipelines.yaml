@@ -39,7 +39,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendServiceArm: '$(azureServiceConnectionId)'
         backendAzureRmResourceGroupName: 'Azuredevops'
-        backendAzureRmStorageAccountName: 'tfstate1058821436'
+        backendAzureRmStorageAccountName: 'tfstate1248720928'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
 
@@ -188,7 +188,7 @@ stages:
                 tar -xf apache-jmeter-5.6.tgz
                 unzip -o $(Build.BuildId)-perftests.zip
                 ./apache-jmeter-5.6/bin/jmeter -n -t stress-test.jmx -l $(Build.BuildId)-jmeter_stress.log -e -o /home/devopsagent/$(Build.BuildId)_Stress_Test_Logs/
-                cat jmeter.log                                                                           # ToDo: Write your commands
+                cat jmeter.log                                                                           # ToDo: Write your commandst
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           # Endurance Test
           - task: CmdLine@2
