@@ -234,7 +234,7 @@ stages:
         deploy:
           steps:
           - download: current
-            artifact: drop-ui-tests     # ToDo: Change/provide a name
+            artifact: drop-uitests  
             
           - task: Bash@3
             inputs:
