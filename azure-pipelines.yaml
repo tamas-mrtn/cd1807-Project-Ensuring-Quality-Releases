@@ -182,6 +182,7 @@ stages:
           #--------------------------------------------#    
           # Stress test
           - task: CmdLine@2
+            displayName: Run JMeter Stress Test
             inputs:
               script: |
                 wget "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.tgz"
@@ -192,6 +193,7 @@ stages:
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           # Endurance Test
           - task: CmdLine@2
+            displayName: Run JMeter Endurance Test
             inputs:
               script: |
                 unzip -o $(Build.BuildId)-perftests.zip
@@ -219,4 +221,48 @@ stages:
             displayName: Publish JMeter Logs
             inputs:
               targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
-              artifactName: 'drop-jmeter-logs'       
+              artifactName: 'drop-jmeter-logs'     
+
+  #--------------------------------------------#  
+  # Selenium | Functional UI Tests
+  # ToDo: 
+  - deployment: VMDeploy
+    displayName: Selenium Tests
+    environment: 'test-vm'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop-ui-tests     # ToDo: Change/provide a name
+            
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |           
+                #! /bin/bash
+                
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                pip3 install selenium
+                cd ~/
+                DIR=/home/testuser/app
+                if [ ! -d "$DIR" ]; then
+                    mkdir app
+                fi
+                mv /home/testuser/azagent/_work/1/drop-uitests/$(Build.BuildId)-uitests.zip app
+                cd app
+                unzip -o $(Build.BuildId)-uitests.zip
+                FILE=/home/testuser/app/chromedriver_linux64.zip
+                if [ ! -f "$FILE" ]; then
+                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+                    wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+                    unzip -o chromedriver_linux64.zip
+                    sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
+                fi
+                export PATH=$PATH:/home/testuser/app
+                echo "Starting Selenium Tests"
+                python3 add_remove_from_cart.py >> selenium.log
+                echo "Completed Selenium Tests. Check selenium.log for results."  
