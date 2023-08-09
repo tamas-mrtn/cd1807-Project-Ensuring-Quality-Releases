@@ -257,14 +257,14 @@ stages:
                 unzip -o $(Build.BuildId)-uitests.zip
                 echo "Show app folder content"
                 ls
-                FILE=/home/devopsagent/app/chromedriver_linux64.zip
+                FILE=/home/devopsagent/app/chromedriver-linux64.zip
                 if [ ! -f "$FILE" ]; then
-                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-                    wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-                    unzip -o chromedriver_linux64.zip
+                    wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.170/linux64/chromedriver-linux64.zip
+                    unzip -o chromedriver-linux64.zip
                     sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
                 fi
                 export PATH=$PATH:/home/devopsagent/app
                 echo "Starting Selenium Tests"
                 python3 add_remove_from_cart.py >> selenium.log
-                echo "Completed Selenium Tests. Check selenium.log for results."  
+                echo "Completed Selenium Tests. Check selenium.log for results."
+                cat selenium.log  
