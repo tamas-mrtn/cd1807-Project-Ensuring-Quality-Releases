@@ -246,6 +246,7 @@ stages:
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
+                sudo apt --fix-broken install
                 pip3 install selenium
                 cd ~/
                 DIR=/home/devopsagent/app
